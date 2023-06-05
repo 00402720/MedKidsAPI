@@ -22,4 +22,11 @@ The MedKids API is built using the following technologies:
 - **Web Framework**: [Express](https://expressjs.com/)
 - **Database**: [PostgreSQL](https://www.postgresql.org/)
 
+## Versions
+
+  **nvm**: v20.2.0
+  **npm**: v9.6.7
+  **node**: v20.2.0
+  **express**: v4.18.2
+
 ## License
