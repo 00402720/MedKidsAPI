@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db.config');
+const sequelize = require('../config/db.config');
 const BodySystem = require('./body_system');
 
 const BodyPart = sequelize.define('body_part', {

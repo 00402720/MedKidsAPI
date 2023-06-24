@@ -1,4 +1,4 @@
-const {sequelizeConnection} = require("../config/db.config");
+const sequelize = require("../config/db.config");
 
 const Sequelize = require("sequelize");
 
@@ -14,19 +14,7 @@ const bodyPartModel = require('./body_part');
 const levelXBodySystemModel = require('./level_x_body_system');
 const userXInsigniaModel = require('./user_x_insignia');
 
-//Connection to PostgreSQL Database based on the db.config file
-const sequelize = new Sequelize(sequelizeConnection.DB, sequelizeConnection.USER, sequelizeConnection.PASSWORD, {
-  host: sequelizeConnection.HOST,
-  dialect: sequelizeConnection.dialect,
-  operatorsAliases: false,
-
-  pool: {
-    max: sequelizeConnection.pool.max,
-    min: sequelizeConnection.pool.min,
-    acquire: sequelizeConnection.pool.acquire,
-    idle: sequelizeConnection.pool.idle
-  }
-});
+//Connection to PostgreSQL Database based on the db.config fill
 
 const db = {};
 

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db.config');
+const sequelize = require('../config/db.config');
 const ProfilePicture = require('../models/profile_picture');
 const Rank = require('../models/rank');
 
