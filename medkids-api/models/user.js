@@ -23,7 +23,7 @@ const User = sequelize.define("user", {
   },
   points: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     default: 0
   }
 });

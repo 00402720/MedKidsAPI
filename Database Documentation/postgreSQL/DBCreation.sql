@@ -1,7 +1,7 @@
 /*
 Database creation script
-	-version 1.4
-	last modified: 22/06/2023
+	-version 1.5
+	last modified: 26/06/2023
 */
 
 CREATE TABLE "FUN_FACT"(
@@ -71,3 +71,13 @@ CREATE TABLE "USERXINSIGNIA"(
 	insignia_id INT REFERENCES "INSIGNIA"(id),
 	PRIMARY KEY (user_id,insignia_id)
 );--10
+
+--Create role to connect to the database
+CREATE USER medkids_admin01;
+ALTER USER medkids_admin01 CREATEDB CREATEROLE;
+ALTER USER medkids_admin01 LOGIN;
+ALTER USER medkids_admin01 WITH PASSWORD '_8fraG!wrlga#hadred?';
+
+GRANT USAGE ON SCHEMA public TO medkids_admin01;
+ALTER USER new_user LOGIN;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO medkids_admin01;

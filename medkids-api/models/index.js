@@ -21,7 +21,7 @@ const db = {};
 db.Sequelize = Sequelize;  // Sequalize library
 db.sequelize = sequelize; //Database connection credentials
 
-//All database tables
+//Create all database tables
 db.funFact = new funFactModel(sequelize, Sequelize);
 db.rank = new rankModel(sequelize, Sequelize);
 db.profilePicture = new profilePictureModel(sequelize, Sequelize);

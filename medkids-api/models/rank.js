@@ -8,7 +8,7 @@ const Rank = sequelize.define('rank', {
     autoIncrement: true
   },
   rank: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   }
 });
