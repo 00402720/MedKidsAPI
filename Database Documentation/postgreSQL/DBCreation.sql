@@ -1,0 +1,83 @@
+/*
+Database creation script
+	-version 1.5
+	last modified: 26/06/2023
+*/
+
+CREATE TABLE "FUN_FACT"(
+	id SERIAL PRIMARY KEY,
+	fun_fact VARCHAR(250) NOT NULL
+);--1
+
+CREATE TABLE "RANK"(
+	id SERIAL PRIMARY KEY,
+	rank VARCHAR(40) NOT NULL DEFAULT 'NEW USER'
+);--2
+
+CREATE TABLE "PROFILE_PICTURE"(
+	id SERIAL PRIMARY KEY,
+	profile_picture BYTEA NOT NULL
+);--3
+
+CREATE TABLE "USER"(
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(40) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	password VARCHAR(30) NOT NULL,
+	points INT NOT NULL DEFAULT 0,
+	profile_picture_id INT NOT NULL DEFAULT 1 REFERENCES "PROFILE_PICTURE"(id), --FK
+	rank_id INT NOT NULL DEFAULT 1 REFERENCES "RANK"(id) --FK
+);--4
+
+CREATE TABLE "LEVEL"(
+	id SERIAL PRIMARY KEY,
+	difficulty INT NOT NULL,
+	body_parts_count INT NOT NULL
+);--5
+
+CREATE TABLE "BODY_SYSTEM"(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(25) NOT NULL,
+	section_image BYTEA NOT NULL,
+	puzzle_image BYTEA NOT NULL
+);--6
+
+
+CREATE TABLE "LEVELXBODY_SYSTEM"(
+	level_id INT REFERENCES "LEVEL"(id),
+	body_system INT REFERENCES "BODY_SYSTEM"(id),
+	PRIMARY KEY (level_id, body_system)
+);--7
+
+
+CREATE TABLE "INSIGNIA"(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(35) NOT NULL,
+	description TEXT NOT NULL,
+	image BYTEA NOT NULL,
+	body_system_id INT NOT NULL REFERENCES "BODY_SYSTEM"(id) --FK
+);--8
+
+CREATE TABLE "BODY_PART"(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(30) NOT NULL,
+	image BYTEA NOT NULL,
+	description TEXT NOT NULL,
+	body_system_id INT NOT NULL REFERENCES "BODY_SYSTEM"(id) --FK
+);--9
+
+CREATE TABLE "USERXINSIGNIA"(
+	user_id INT REFERENCES "USER"(id),
+	insignia_id INT REFERENCES "INSIGNIA"(id),
+	PRIMARY KEY (user_id,insignia_id)
+);--10
+
+--Create role to connect to the database
+CREATE USER medkids_admin01;
+ALTER USER medkids_admin01 CREATEDB CREATEROLE;
+ALTER USER medkids_admin01 LOGIN;
+ALTER USER medkids_admin01 WITH PASSWORD '_8fraG!wrlga#hadred?';
+
+GRANT USAGE ON SCHEMA public TO medkids_admin01;
+ALTER USER new_user LOGIN;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO medkids_admin01;
