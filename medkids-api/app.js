@@ -3,7 +3,7 @@ const db = require("./models/index");
 
 const app = express();
 const apiRoutes = require('./routes/routes');
-//const adminRoutes = require('./routes/adminRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -21,7 +21,7 @@ db.sequelize.sync()
   });
 
 app.use('/api',apiRoutes);
-//app.use('/api',adminRoutes);
+app.use('/api',adminRoutes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;
