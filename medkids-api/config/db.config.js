@@ -2,7 +2,7 @@
 const { Sequelize} = require('sequelize');
 
 const sequelize = new Sequelize('medkidsdb', 'medkids_admin01', '_8fraG!wrlga#hadred?', {
-    host: 'localhost',
+    host: 'db',
     dialect: 'postgres',
     pool: {
       max: 5,
