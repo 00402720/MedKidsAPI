@@ -88,15 +88,6 @@ router.get('/level/:id', async(req, res) => {
 
 
 //User api endpoints
-router.get('/user', async(req, res) => {
-    try {
-        const myModels = await userModel.findAll();
-        res.json(myModels);
-    } catch(error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
 router.get('/user/:id', async(req, res) => {
     try {
         const userId = await req.params.id;
@@ -117,7 +108,8 @@ router.post('/user/create', async (req, res) => {
             username: username,
             email: email,
             password: password,
-            points: 0});
+            points: 0,
+            profile_picture: 1});
         res.status(201).json(newUser);
     } catch (error) {
     console.error(error);
@@ -222,23 +214,23 @@ router.put('/user/update/rank/:id', async(req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.put('/user/:username/:password', async(req, res) => {
-    const userName = req.params.username;
-    const password = req.params.password;
+router.post('/user', async(req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
     try {
-    const user = await userModel.findOne({ username: userName, password: password });
-    if(!user){
-        res.status(400).json({ error: 'User not found' });
+        const user = await userModel.findOne({ email: email, password: password });
+        if(!user){
+            res.status(400).json({ error: 'User not found' });
+        }
+        res.status(200).json({ message: 'Login successful' });
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            const validationErrors = error.errors.map((err) => err.message);
+            return res.status(400).json({ error: validationErrors });
+        }
+    console.error('Error updating user:', error);
+    return res.status(500).json({ error: 'Internal server error' });
     }
-    res.status(200).json({ message: 'Login successful' });
-} catch (error) {
-    if (error.name === 'SequelizeValidationError') {
-        const validationErrors = error.errors.map((err) => err.message);
-        return res.status(400).json({ error: validationErrors });
-    }
-console.error('Error updating user:', error);
-return res.status(500).json({ error: 'Internal server error' });
-}
 });
 
 router.get('/body-system', async(req, res) => {
