@@ -116,7 +116,8 @@ router.post('/user/create', async (req, res) => {
         const newUser = await userModel.create({
             username: username,
             email: email,
-            password: password});
+            password: password,
+            points: 0});
         res.status(201).json(newUser);
     } catch (error) {
     console.error(error);
@@ -220,6 +221,24 @@ router.put('/user/update/rank/:id', async(req, res) => {
     console.error('Error updating user:', error);
     return res.status(500).json({ error: 'Internal server error' });
     }
+});
+router.put('/user/:username/:password', async(req, res) => {
+    const userName = req.params.username;
+    const password = req.params.password;
+    try {
+    const user = await userModel.findOne({ username: userName, password: password });
+    if(!user){
+        res.status(400).json({ error: 'User not found' });
+    }
+    res.status(200).json({ message: 'Login successful' });
+} catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+        const validationErrors = error.errors.map((err) => err.message);
+        return res.status(400).json({ error: validationErrors });
+    }
+console.error('Error updating user:', error);
+return res.status(500).json({ error: 'Internal server error' });
+}
 });
 
 router.get('/body-system', async(req, res) => {
