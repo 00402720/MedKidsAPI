@@ -8,7 +8,6 @@ const db = require('../models/index');
 //Import models
 const funFactModel = require("../models/fun_fact");
 const rankModel = require('../models/rank');
-const profilePictureModel = require('../models/profile_picture');
 const levelModel = require('../models/level');
 const bodySystemModel = require('../models/body_system');
 const insigniaModel = require('../models/insignia');
@@ -38,20 +37,6 @@ router.post('/rank/create', async (req, res) => {
     try{
         const newRank = await rankModel.create({rank: rank});
         res.status(201).json(newRank);
-    } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-router.post('/profilePicture/create', async (req, res) => {
-    const { profilePicture } = req.body;
-    if (!profilePicture) {
-        return res.status(400).json({ error: 'No profile picture has been attached' });
-      }
-    try{
-        const newProfilePicture = await profilePictureModel.create({profile_picture: profilePicture});
-        res.status(201).json(newProfilePicture);
     } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

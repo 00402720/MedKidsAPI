@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db.config');
-const ProfilePicture = require('../models/profile_picture');
 const Rank = require('../models/rank');
 
 const User = sequelize.define("user", {
@@ -25,15 +24,14 @@ const User = sequelize.define("user", {
     type: DataTypes.INTEGER,
     allowNull: true,
     default: 0
+  },
+  profile_picture: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
 });
 
-  //Foreign keys
-User.belongsTo(ProfilePicture, {
-  foreignKey: 'profile_picture_id',
-  targetKey: 'id'
-});
-
+//Foreign Key
 User.belongsTo(Rank, {
   foreignKey: 'rank_id',
   targetKey: 'id'

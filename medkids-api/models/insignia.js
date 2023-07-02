@@ -15,10 +15,6 @@ const Insignia = sequelize.define('insignia', {
   description: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  image: {
-    type: DataTypes.BLOB,
-    allowNull: false
   }
 });
 

@@ -12,12 +12,12 @@ const BodyPart = sequelize.define('body_part', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  image: {
-    type: DataTypes.BLOB,
-    allowNull: false
-  },
   description: {
     type: DataTypes.STRING,
+    allowNull: false
+  },
+  image: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 });
