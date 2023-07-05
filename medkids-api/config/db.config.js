@@ -1,8 +1,13 @@
 //Login credentials for the database
 const { Sequelize} = require('sequelize');
 
-const sequelize = new Sequelize('medkidsdb', 'postgres', 'Krlos2001', {
+<<<<<<< Updated upstream
+const sequelize = new Sequelize('medkidsdb', 'medkids_admin01', '_8fraG!wrlga#hadred?', {
+    host: 'db',
+=======
+const sequelize = new Sequelize('medkidsdb', 'postgres', 'root', {
     host: 'localhost',
+>>>>>>> Stashed changes
     dialect: 'postgres',
     pool: {
       max: 5,
