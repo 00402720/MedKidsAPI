@@ -3,7 +3,7 @@ The purpouse of this file is tho create the necesary endpoints to
 */
 const express = require('express');
 const router = express.Router();
-const db = require('../models/index');
+const jwt = require('jsonwebtoken');
 
 //Import models
 const funFactModel = require("../models/fun_fact");
@@ -12,13 +12,11 @@ const levelModel = require('../models/level');
 const bodySystemModel = require('../models/body_system');
 const insigniaModel = require('../models/insignia');
 const bodyPartModel = require('../models/body_part');
-const levelXBodySystemModel = require('../models/level_x_body_system');
-const userXInsigniaModel = require('../models/user_x_insignia');
 
 router.post('/funFact/create', async (req, res) => {
     const { funFact } = req.body;
     if (!funFact) {
-        return res.status(400).json({ error: 'No fun fact was attached' });
+        return jwt.sign({ fun_fact: funFact});
       }
     try{
         const newFunFact = await funFactModel.create({fun_fact: funFact});
@@ -112,6 +110,22 @@ router.post('/body-part/create', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+router.get('/user/:id', async(req, res) => {
+    try {
+        const userId = await req.params.id;
+        const user = await userModel.findByPk(userId);
+        res.json(user);
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/api/users', (req, res) =>{
+    const user = userModel.findAll();
+    res.status(200).json({ user: user });
 });
 
 module.exports = router;
