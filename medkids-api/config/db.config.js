@@ -1,7 +1,7 @@
 //Login credentials for the database
 const { Sequelize} = require('sequelize');
 
-const sequelize = new Sequelize('medkidsdb', 'postgres', 'root', {
+const sequelize = new Sequelize('medkidsdb', 'postgres', 'Krlos2001', {
     host: 'localhost',
     dialect: 'postgres',
     pool: {
