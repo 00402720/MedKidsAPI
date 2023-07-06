@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require("./models/index");
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const apiRoutes = require('./routes/routes');
