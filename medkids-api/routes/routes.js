@@ -88,16 +88,6 @@ router.get('/level/:id', async(req, res) => {
 
 
 //User api endpoints
-router.get('/user/:id', async(req, res) => {
-    try {
-        const userId = await req.params.id;
-        const user = await userModel.findByPk(userId);
-        res.json(user);
-    } catch(error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
 router.post('/user/create', async (req, res) => {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -110,7 +100,9 @@ router.post('/user/create', async (req, res) => {
             password: password,
             points: 0,
             profile_picture: 1});
-        res.status(201).json(newUser);
+        jwt.sign({user: newUser}, '12345', (err, token) => {
+            res.json({token: token})
+        });
     } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -163,13 +155,14 @@ router.put('/user/update/pfp/:id', async(req, res) => {
     const {profilePicture} = req.body;
 
     try {
-        const user = await userModel.findByPk(userId);
-        if (!user) {
-            return res.status(400).json({error : "User not found"});
+        const authData = jwt.verify(req.token, '12345');
+        const user = await userModel.findByPk(authData.user.id);
+        if(!user){
+            return res.status(401).json({ error: 'User not found' });
         }
-        user.profilePicture = profilePicture;
+        user.profile_picture = req.params.id;
         await user.save();
-        return res.status(200).json({ message: 'User updated successfully', user });
+        return res.json({message: "Profile picture updated" });
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
             const validationErrors = error.errors.map((err) => err.message);
@@ -179,32 +172,19 @@ router.put('/user/update/pfp/:id', async(req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.put('/user/update/rank/:id', async(req, res) => {
-    const userId = req.params.id;
-
+router.put('/user/update/rank', verifyKey, async (req, res) => {
     try {
-        const user = await userModel.findByPk(userId);
+        const authData = jwt.verify(req.token, '12345');
+        const user = await userModel.findByPk(authData.user.id);
+        
         if (!user) {
-            return res.status(400).json({error : "User not found"});
+            return res.status(404).json({ error: 'User not found' });
         }
-        switch (true) {
-            case user.points <= 50:
-                user.rank_id = 1;
-                break;
 
-            case user.points <= 100:
-                user.rank_id = 2;
-                break;
-
-            case user.points <= 150:
-                user.rank_id = 3;
-                break;
-            default:
-                user.rank_id = 1;
-                break;
-        }
+        user.rank_id = calculateRank(user.points);
         await user.save();
-        return res.status(200).json({ message: 'User updated successfully', user });
+        return res.status(201).json({ message: 'Rank updated' });
+
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
             const validationErrors = error.errors.map((err) => err.message);
@@ -218,11 +198,14 @@ router.post('/user', async(req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     try {
-        const user = await userModel.findOne({ email: email, password: password });
-        if(!user){
-            res.status(400).json({ error: 'User not found' });
-        }
-        res.status(200).json({ message: 'Login successful' });
+        jwt.verify(req.token, '12345', (error, authData) => {
+            if (error) {
+                res.status(403);
+            }
+            else{
+                res.json({message: "Login successful", authData: authData});
+            }
+        });
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
             const validationErrors = error.errors.map((err) => err.message);
@@ -328,5 +311,37 @@ router.get('/rank-user', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+function verifyKey(req, res, next) {
+    const bearerToken = req.headers['authorization'];
+    if (bearerToken !== undefined) {
+        const bearerTokenSecret = bearerToken.split(" ")[1];
+        req.token = bearerTokenSecret;
+        next();
+    }
+    res.status(403);
+}
+
+function calculateRank(points) {
+    let rank_id;
+    switch (true) {
+        case points <= 50:
+            rank_id = 1;
+            break;
+
+        case points <= 100:
+            rank_id = 2;
+            break;
+
+        case points <= 150:
+            rank_id = 3;
+            break;
+
+        default:
+            rank_id = 1;
+            break;
+    }
+    return rank_id;
+}
 
 module.exports = router;
