@@ -187,22 +187,27 @@ router.put('/user/update/rank', verifyKey, async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.post('/user', verifyKey, async(req, res) => {
+router.post('/user/:email/:password', verifyKey, async (req, res) => {
     try {
-        jwt.verify(req.token, '12345', (error, authData) => {
-            if (error) {
-                res.status(403);
-            }
-            else{
-                res.json({message: "Login successful"});
-            }
-        });
-    } catch (error) {
-        if (error.name === 'SequelizeValidationError') {
-            const validationErrors = error.errors.map((err) => err.message);
-            return res.status(400).json({ error: validationErrors });
+      const { email, password } = req.params;
+      // Verify the JWT token
+      jwt.verify(req.token, '12345', async (error, authData) => {
+        if (error) {
+          return res.status(403).json({ error: 'Invalid token' });
         }
-    return res.status(500).json({ error: 'Internal server error' });
+        // Check if the user exists in the database
+        const checkUser = await userModel.findOne({ where: { password: password, email: email } });
+        if (!checkUser) {
+          return res.status(403).json({ error: 'Invalid email or password' });
+        }
+        res.json({ message: 'Login successful', user: checkUser, jwt: req.token });
+      });
+    } catch (error) {
+      if (error.name === 'SequelizeValidationError') {
+        const validationErrors = error.errors.map((err) => err.message);
+        return res.status(400).json({ error: validationErrors });
+      }
+      return res.status(500).json({ error: 'Internal server error' });
     }
 });
 
