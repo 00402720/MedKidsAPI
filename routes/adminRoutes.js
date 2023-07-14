@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 //Import models
 const funFactModel = require("../models/fun_fact");
+const userModel = require("../models/user");
 const rankModel = require('../models/rank');
 const levelModel = require('../models/level');
 const bodySystemModel = require('../models/body_system');
@@ -105,13 +106,14 @@ router.post('/body-part/create', async (req, res) => {
             image: image,
             description: description
         });
-        res.status(201).json(newBodySystem);
+        res.status(201).json(newBodyPart);
     } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+/*
 router.get('/user/:id', async(req, res) => {
     try {
         const userId = await req.params.id;
@@ -123,9 +125,9 @@ router.get('/user/:id', async(req, res) => {
     }
 });
 
-router.get('/api/users', (req, res) =>{
-    const user = userModel.findAll();
+router.get('/user/all', async (req, res) =>{
+    const user = await userModel.findAll();
     res.status(200).json({ user: user });
 });
-
+*/
 module.exports = router;

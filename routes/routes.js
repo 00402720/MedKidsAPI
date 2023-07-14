@@ -187,7 +187,7 @@ router.put('/user/update/rank', verifyKey, async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.post('/user/:email/:password', verifyKey, async (req, res) => {
+router.post('/login/:email/:password', verifyKey, async (req, res) => {
     try {
       const { email, password } = req.params;
       // Verify the JWT token
